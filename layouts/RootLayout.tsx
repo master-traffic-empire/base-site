@@ -3,6 +3,7 @@
 
 import { Inter, Syne, DM_Sans, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "../components/Analytics"
+import { CookieConsent } from "../components/CookieConsent"
 import { generateWebSiteJsonLd } from "../lib/jsonld"
 import type { SiteConfig } from "../types"
 import React from "react"
@@ -71,6 +72,7 @@ export function RootLayout({
       </head>
       <body className={`${fontClasses} ${bodyClassName ?? ""}`.trim()}>
         {children}
+        <CookieConsent />
         <Analytics />
       </body>
     </html>
