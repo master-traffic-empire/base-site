@@ -17,6 +17,10 @@ export function generateSiteMetadata(config: SiteConfig): Metadata {
     description: config.description,
     keywords: [config.primaryKeyword, ...config.targetKeywords],
     metadataBase: new URL(config.baseUrl),
+    icons: {
+      icon: "/favicon.svg",
+      apple: "/favicon.svg",
+    },
     openGraph: {
       type: "website",
       locale: "en_US",
@@ -24,6 +28,7 @@ export function generateSiteMetadata(config: SiteConfig): Metadata {
       siteName: config.name,
       title: `${config.name} — ${config.tagline}`,
       description: config.description,
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: config.name }],
     },
     twitter: {
       card: "summary_large_image",
