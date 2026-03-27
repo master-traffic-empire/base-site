@@ -26,6 +26,9 @@ export function Footer({ siteConfig, extraLinks }: FooterProps) {
               {link.label}
             </Link>
           ))}
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/terms">Terms</Link>
+          <Link href="/about">About</Link>
         </nav>
       </div>
     </footer>

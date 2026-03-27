@@ -47,6 +47,13 @@ export {
   generateItemListJsonLd,
 } from "./lib/jsonld"
 
+// Legal
+export { CookieConsent } from "./components/CookieConsent"
+export { PrivacyPolicy } from "./components/legal/PrivacyPolicy"
+export { TermsOfService } from "./components/legal/TermsOfService"
+export { About } from "./components/legal/About"
+export { Disclaimer } from "./components/legal/Disclaimer"
+
 // GEO route handlers
 export { createLlmsTxtHandler } from "./geo/llms-txt"
 export { createLlmsFullTxtHandler } from "./geo/llms-full-txt"
