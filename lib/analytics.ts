@@ -3,6 +3,18 @@
 
 export const GA_MEASUREMENT_ID = "G-E0CF8H2DGH"
 
+// Extend Window for gtag
+declare global {
+  interface Window {
+    gtag: (
+      command: string,
+      targetId: string,
+      config?: Record<string, unknown>
+    ) => void
+    dataLayer: Record<string, unknown>[]
+  }
+}
+
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export function pageview(url: string) {
   if (typeof window !== "undefined" && window.gtag) {
@@ -32,14 +44,64 @@ export function event(
   }
 }
 
-// Extend Window for gtag
-declare global {
-  interface Window {
-    gtag: (
-      command: string,
-      targetId: string,
-      config?: Record<string, unknown>
-    ) => void
-    dataLayer: Record<string, unknown>[]
-  }
+/**
+ * trackEvent — Enhanced event tracking with automatic context enrichment.
+ * All events include site_slug, page_path, and timestamp.
+ */
+export function trackEvent(
+  name: string,
+  params: Record<string, string | number | boolean | undefined> = {}
+) {
+  if (typeof window === "undefined" || !window.gtag) return
+
+  // Auto-enrich with context
+  const siteSlug = document.querySelector('meta[name="site-slug"]')?.getAttribute("content") || ""
+  const pagePath = window.location.pathname
+
+  window.gtag("event", name, {
+    site_slug: siteSlug,
+    page_path: pagePath,
+    timestamp: new Date().toISOString(),
+    ...params,
+  })
+}
+
+/**
+ * Track copy-to-clipboard events
+ */
+export function trackCopy(contentType: string, contentPreview?: string) {
+  trackEvent("copy_to_clipboard", {
+    content_type: contentType,
+    content_preview: contentPreview?.slice(0, 100),
+  })
+}
+
+/**
+ * Track outbound link clicks
+ */
+export function trackOutboundLink(url: string) {
+  trackEvent("external_link", {
+    link_url: url,
+    link_domain: new URL(url).hostname,
+  })
+}
+
+/**
+ * Track cross-site navigation (to other Thicket sites)
+ */
+export function trackCrossSiteClick(targetSite: string, targetUrl: string) {
+  trackEvent("cross_site_click", {
+    target_site: targetSite,
+    target_url: targetUrl,
+  })
+}
+
+/**
+ * Track tool usage
+ */
+export function trackToolUsed(toolName: string, action?: string) {
+  trackEvent("tool_used", {
+    tool_name: toolName,
+    tool_action: action,
+  })
 }

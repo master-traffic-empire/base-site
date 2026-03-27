@@ -45,6 +45,49 @@ ul, ol {
   --transition: 200ms ease;
 }
 
+/* ── Dark Mode ──────────────────────────────────────── */
+:root.dark {
+  --color-primary: #c4b5fd;
+  --color-secondary: #818cf8;
+  --color-accent: #22d3ee;
+  --color-surface: #1e1b2e;
+  --color-surface-dark: #0f0b1a;
+  --color-text: #e2e0ea;
+  --color-text-muted: #9895a8;
+  --color-border: #2e2a40;
+  --color-white: #1a1726;
+  color-scheme: dark;
+}
+
+:root.dark body {
+  background: #13101e;
+}
+
+:root.dark .header {
+  background: #0f0b1a;
+}
+
+:root.dark .hero {
+  background: linear-gradient(135deg, #0f0b1a 0%, #1e1b2e 100%);
+}
+
+:root.dark .footer {
+  background: #0a0812;
+}
+
+:root.dark .card,
+:root.dark .tool-card,
+:root.dark .tool-form,
+:root.dark .faq-question,
+:root.dark .stat-card,
+:root.dark .bulk-item {
+  background: #1a1726;
+}
+
+:root.dark img {
+  opacity: 0.92;
+}
+
 /* ── Base ────────────────────────────────────────────── */
 body {
   font-family: var(--font-body), system-ui, sans-serif;

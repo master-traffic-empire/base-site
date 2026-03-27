@@ -9,32 +9,24 @@ interface RobotsOptions {
   siteConfig: SiteConfig
   /** Additional disallowed paths */
   extraDisallow?: string[]
-  /** Additional user-agent rules */
-  extraRules?: MetadataRoute.Robots["rules"]
 }
 
 export function createRobots(options: RobotsOptions) {
   return function robots(): MetadataRoute.Robots {
-    const { siteConfig, extraDisallow, extraRules } = options
-
-    const defaultRules: MetadataRoute.Robots["rules"] = [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/api/", "/_next/", ...(extraDisallow ?? [])],
-      },
-      { userAgent: "GPTBot", allow: "/" },
-      { userAgent: "ClaudeBot", allow: "/" },
-      { userAgent: "PerplexityBot", allow: "/" },
-      { userAgent: "Googlebot", allow: "/" },
-    ]
-
-    const rules = extraRules
-      ? [...defaultRules, ...(Array.isArray(extraRules) ? extraRules : [extraRules])]
-      : defaultRules
+    const { siteConfig, extraDisallow } = options
 
     return {
-      rules,
+      rules: [
+        {
+          userAgent: "*",
+          allow: "/",
+          disallow: ["/api/", "/_next/", ...(extraDisallow ?? [])],
+        },
+        { userAgent: "GPTBot", allow: "/" },
+        { userAgent: "ClaudeBot", allow: "/" },
+        { userAgent: "PerplexityBot", allow: "/" },
+        { userAgent: "Googlebot", allow: "/" },
+      ],
       sitemap: `${siteConfig.baseUrl}/sitemap.xml`,
       host: siteConfig.baseUrl,
     }

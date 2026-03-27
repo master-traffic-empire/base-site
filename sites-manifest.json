@@ -1,0 +1,86 @@
+{
+  "generatedAt": "2026-03-27T15:30:19.644Z",
+  "totalSites": 8,
+  "sites": [
+    {
+      "slug": "root",
+      "name": "Thicket",
+      "description": "Root hub site — links to all subsites, GA4 verification, master llms.txt",
+      "subdomain": "thicket.sh",
+      "url": "https://thicket.sh",
+      "category": "hub",
+      "llmsTxt": "https://thicket.sh/llms.txt",
+      "apiEndpoint": null
+    },
+    {
+      "slug": "ai-directory",
+      "name": "ToolPilot",
+      "description": "Navigate the AI landscape — discover tools that actually deliver",
+      "subdomain": "ai.thicket.sh",
+      "url": "https://ai.thicket.sh",
+      "category": "directory",
+      "llmsTxt": "https://ai.thicket.sh/llms.txt",
+      "apiEndpoint": null
+    },
+    {
+      "slug": "fitness-calc",
+      "name": "CalcFit",
+      "description": "Fast, accurate fitness calculators — no fluff, just numbers",
+      "subdomain": "fit.thicket.sh",
+      "url": "https://fit.thicket.sh",
+      "category": "calculator",
+      "llmsTxt": "https://fit.thicket.sh/llms.txt",
+      "apiEndpoint": "https://fit.thicket.sh/api/llm"
+    },
+    {
+      "slug": "text-tools",
+      "name": "TextKit",
+      "description": "Text tools that just work — fast, free, no signup",
+      "subdomain": "text.thicket.sh",
+      "url": "https://text.thicket.sh",
+      "category": "utility",
+      "llmsTxt": "https://text.thicket.sh/llms.txt",
+      "apiEndpoint": "https://text.thicket.sh/api/llm"
+    },
+    {
+      "slug": "paycheck-calc",
+      "name": "PayScale Pro",
+      "description": "Know exactly what you take home — paycheck and salary calculators",
+      "subdomain": "pay.thicket.sh",
+      "url": "https://pay.thicket.sh",
+      "category": "calculator",
+      "llmsTxt": "https://pay.thicket.sh/llms.txt",
+      "apiEndpoint": "https://pay.thicket.sh/api/llm"
+    },
+    {
+      "slug": "image-tools",
+      "name": "Pixelry",
+      "description": "Image tools, instantly — compress, resize, convert",
+      "subdomain": "img.thicket.sh",
+      "url": "https://img.thicket.sh",
+      "category": "utility",
+      "llmsTxt": "https://img.thicket.sh/llms.txt",
+      "apiEndpoint": "https://img.thicket.sh/api/llm"
+    },
+    {
+      "slug": "color-tools",
+      "name": "Chromatic",
+      "description": "Design-grade color tools — fast, precise, free",
+      "subdomain": "colors.thicket.sh",
+      "url": "https://colors.thicket.sh",
+      "category": "design-tools",
+      "llmsTxt": "https://colors.thicket.sh/llms.txt",
+      "apiEndpoint": "https://colors.thicket.sh/api/llm"
+    },
+    {
+      "slug": "finance-calc",
+      "name": "MoneyLens",
+      "description": "See your finances with clarity — financial calculators for loans, investing, and savings",
+      "subdomain": "money.thicket.sh",
+      "url": "https://money.thicket.sh",
+      "category": "calculator",
+      "llmsTxt": "https://money.thicket.sh/llms.txt",
+      "apiEndpoint": "https://money.thicket.sh/api/llm"
+    }
+  ]
+}

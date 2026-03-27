@@ -16,12 +16,25 @@ export { Header } from "./components/Header"
 export { Footer } from "./components/Footer"
 export { ToolCard } from "./components/ToolCard"
 export { CategoryCard } from "./components/CategoryCard"
+export { RecentlyUsed, addRecentPage, getRecentPages } from "./components/RecentlyUsed"
+export { ShareButton } from "./components/ShareButton"
+export { DarkModeToggle } from "./components/DarkModeToggle"
 
 // Layout
 export { RootLayout } from "./layouts/RootLayout"
 
 // Lib
-export { GA_MEASUREMENT_ID, pageview, event } from "./lib/analytics"
+export {
+  GA_MEASUREMENT_ID,
+  pageview,
+  event,
+  trackEvent,
+  trackCopy,
+  trackOutboundLink,
+  trackCrossSiteClick,
+  trackToolUsed,
+} from "./lib/analytics"
+export { useScrollDepth, useTimeOnPage } from "./lib/hooks"
 export {
   generateSiteMetadata,
   generateToolsPageMetadata,
