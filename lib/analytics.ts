@@ -3,6 +3,12 @@
 
 export const GA_MEASUREMENT_ID = "G-E0CF8H2DGH"
 
+// Disable GA4 for internal traffic (agents, scripts, manual testing)
+// Append ?_internal=1 to any URL to suppress analytics
+if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("_internal")) {
+  (window as Record<string, unknown>)[`ga-disable-${GA_MEASUREMENT_ID}`] = true
+}
+
 // Extend Window for gtag
 declare global {
   interface Window {
