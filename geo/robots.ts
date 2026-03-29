@@ -28,7 +28,6 @@ export function createRobots(options: RobotsOptions) {
         { userAgent: "Googlebot", allow: "/" },
       ],
       sitemap: `${siteConfig.baseUrl}/sitemap.xml`,
-      host: siteConfig.baseUrl,
     }
   }
 }
