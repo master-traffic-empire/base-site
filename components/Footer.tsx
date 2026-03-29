@@ -29,6 +29,7 @@ export function Footer({ siteConfig, extraLinks }: FooterProps) {
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
           <Link href="/about">About</Link>
+          <a href="https://bsky.app/profile/thicket06.bsky.social" target="_blank" rel="noopener noreferrer">Feedback</a>
         </nav>
       </div>
       <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1rem", paddingTop: "0.75rem", paddingBottom: "0.5rem", fontSize: "0.8rem", color: "rgba(255,255,255,.5)" }}>
