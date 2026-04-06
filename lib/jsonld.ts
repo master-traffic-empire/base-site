@@ -1,7 +1,7 @@
 // lib/jsonld.ts
 // Helpers to generate JSON-LD structured data schemas
 
-import type { SiteConfig, Tool } from "../types"
+import type { SiteConfig, Tool, Article } from "../types"
 
 /**
  * Generate WebSite JSON-LD schema for the homepage.
@@ -73,6 +73,66 @@ export function generateFAQJsonLd(
         "@type": "Answer",
         text: faq.answer,
       },
+    })),
+  }
+}
+
+/**
+ * Generate Article JSON-LD schema for blog posts.
+ * Uses NewsArticle type which is preferred by Google Discover.
+ */
+export function generateArticleJsonLd(article: Article, config: SiteConfig) {
+  const blogPath = config.blog?.basePath ?? "/blog"
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: article.title,
+    description: article.description,
+    image: [
+      `${config.baseUrl}${article.image.url}`,
+    ],
+    datePublished: article.publishedAt,
+    dateModified: article.updatedAt,
+    author: {
+      "@type": "Person",
+      name: article.author.name,
+      ...(article.author.url ? { url: article.author.url } : {}),
+      ...(article.author.image ? { image: article.author.image } : {}),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: config.name,
+      url: config.baseUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${config.baseUrl}/favicon.svg`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${config.baseUrl}${blogPath}/${article.slug}`,
+    },
+    wordCount: article.content.split(/\s+/).length,
+    articleSection: article.category,
+    keywords: article.tags.join(", "),
+  }
+}
+
+/**
+ * Generate BreadcrumbList JSON-LD for article pages.
+ */
+export function generateBreadcrumbJsonLd(
+  items: Array<{ name: string; url: string }>,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url,
     })),
   }
 }

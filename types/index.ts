@@ -38,6 +38,30 @@ export interface Category {
   featured: boolean
 }
 
+export interface Article {
+  slug: string
+  title: string
+  description: string
+  content: string
+  author: {
+    name: string
+    url?: string
+    image?: string
+  }
+  publishedAt: string
+  updatedAt: string
+  image: {
+    url: string
+    alt: string
+    width: number
+    height: number
+  }
+  category: string
+  tags: string[]
+  readingTime: number
+  featured: boolean
+}
+
 export interface DirectoryData {
   tools: Tool[]
   categories: Category[]
@@ -91,6 +115,17 @@ export interface SiteConfig {
     llmsFullTxtEnabled: boolean
     mdRoutesEnabled: boolean
     structuredApiEnabled: boolean
+  }
+
+  // Blog / Google Discover
+  blog: {
+    enabled: boolean
+    /** Path prefix for blog routes (default: "/blog") */
+    basePath: string
+    /** RSS feed title override (defaults to site name) */
+    feedTitle?: string
+    /** RSS feed description override */
+    feedDescription?: string
   }
 
   // Monetization

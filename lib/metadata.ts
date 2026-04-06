@@ -2,7 +2,7 @@
 // Helper to generate Next.js Metadata from siteConfig
 
 import type { Metadata } from "next"
-import type { SiteConfig } from "../types"
+import type { SiteConfig, Article } from "../types"
 
 /**
  * Generate base metadata for the site's root layout.
@@ -51,6 +51,14 @@ export function generateSiteMetadata(config: SiteConfig): Metadata {
     },
     alternates: {
       canonical: config.baseUrl,
+      ...(config.blog?.enabled
+        ? {
+            types: {
+              "application/rss+xml": `${config.baseUrl}/rss.xml`,
+              "application/atom+xml": `${config.baseUrl}/atom.xml`,
+            },
+          }
+        : {}),
     },
   }
 }
@@ -73,6 +81,89 @@ export function generateToolsPageMetadata(
       title: `All Tools — ${config.name}`,
       description,
       url: `${config.baseUrl}/tools`,
+    },
+  }
+}
+
+/**
+ * Generate metadata for a blog article page.
+ * Optimized for Google Discover with large image preview and article meta.
+ */
+export function generateArticleMetadata(
+  article: Article,
+  config: SiteConfig
+): Metadata {
+  const blogPath = config.blog?.basePath ?? "/blog"
+  const articleUrl = `${config.baseUrl}${blogPath}/${article.slug}`
+
+  return {
+    title: article.title,
+    description: article.description,
+    authors: [{ name: article.author.name, url: article.author.url }],
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description: article.description,
+      url: articleUrl,
+      siteName: config.name,
+      publishedTime: article.publishedAt,
+      modifiedTime: article.updatedAt,
+      authors: [article.author.name],
+      section: article.category,
+      tags: article.tags,
+      images: [
+        {
+          url: `${config.baseUrl}${article.image.url}`,
+          width: article.image.width,
+          height: article.image.height,
+          alt: article.image.alt,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.description,
+      images: [`${config.baseUrl}${article.image.url}`],
+    },
+    alternates: {
+      canonical: articleUrl,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+        "max-snippet": -1,
+      },
+    },
+  }
+}
+
+/**
+ * Generate metadata for the blog listing page.
+ */
+export function generateBlogPageMetadata(config: SiteConfig): Metadata {
+  const blogPath = config.blog?.basePath ?? "/blog"
+  const title = `Blog — ${config.name}`
+  const description = `Latest articles, guides, and insights from ${config.name}.`
+
+  return {
+    title: "Blog",
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${config.baseUrl}${blogPath}`,
+    },
+    alternates: {
+      types: {
+        "application/rss+xml": `${config.baseUrl}/rss.xml`,
+        "application/atom+xml": `${config.baseUrl}/atom.xml`,
+      },
     },
   }
 }
