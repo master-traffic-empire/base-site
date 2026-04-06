@@ -22,7 +22,6 @@ export { ArticlePage } from "./components/ArticlePage"
 export { RecentlyUsed, addRecentPage, getRecentPages } from "./components/RecentlyUsed"
 export { ShareButton } from "./components/ShareButton"
 export { DarkModeToggle } from "./components/DarkModeToggle"
-export { NewsletterSignup } from "./components/NewsletterSignup"
 export { FeedbackCTA } from "./components/FeedbackCTA"
 
 // Layout
