@@ -1,8 +1,9 @@
 // components/Footer.tsx
-// Shared footer component
+// Shared footer component with cross-site network links
 
 import Link from "next/link"
 import type { SiteConfig } from "../types"
+import { getRelatedSites } from "../lib/cross-links"
 
 interface FooterProps {
   siteConfig: SiteConfig
@@ -11,8 +12,83 @@ interface FooterProps {
 }
 
 export function Footer({ siteConfig, extraLinks }: FooterProps) {
+  const relatedSites = getRelatedSites(siteConfig.slug)
+
   return (
     <footer className="footer">
+      {/* Cross-site network section */}
+      {relatedSites.length > 0 && (
+        <div
+          className="container"
+          style={{
+            paddingTop: "1.5rem",
+            paddingBottom: "1rem",
+            borderTop: "1px solid rgba(255,255,255,.08)",
+          }}
+        >
+          <p
+            style={{
+              fontSize: "0.75rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              color: "rgba(255,255,255,.4)",
+              marginBottom: "0.75rem",
+            }}
+          >
+            More free tools from Thicket
+          </p>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "0.5rem",
+            }}
+          >
+            {relatedSites.map((site) => (
+              <a
+                key={site.slug}
+                href={site.url}
+                title={site.tagline}
+                style={{
+                  fontSize: "0.8rem",
+                  color: "rgba(255,255,255,.65)",
+                  textDecoration: "none",
+                  padding: "0.25rem 0.625rem",
+                  border: "1px solid rgba(255,255,255,.12)",
+                  borderRadius: "999px",
+                  transition: "color 0.15s, border-color 0.15s",
+                }}
+                onMouseOver={(e) => {
+                  const el = e.currentTarget
+                  el.style.color = "rgba(255,255,255,.9)"
+                  el.style.borderColor = "rgba(255,255,255,.3)"
+                }}
+                onMouseOut={(e) => {
+                  const el = e.currentTarget
+                  el.style.color = "rgba(255,255,255,.65)"
+                  el.style.borderColor = "rgba(255,255,255,.12)"
+                }}
+              >
+                {site.name}
+              </a>
+            ))}
+            <a
+              href="https://thicket.sh"
+              title="All free tools on Thicket"
+              style={{
+                fontSize: "0.8rem",
+                color: "rgba(255,255,255,.4)",
+                textDecoration: "none",
+                padding: "0.25rem 0.625rem",
+                transition: "color 0.15s",
+              }}
+            >
+              All 25 tools →
+            </a>
+          </div>
+        </div>
+      )}
+
       <div className="container footer-inner">
         <span>
           &copy; {new Date().getFullYear()} {siteConfig.name}
@@ -33,7 +109,7 @@ export function Footer({ siteConfig, extraLinks }: FooterProps) {
         </nav>
       </div>
       <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1rem", paddingTop: "0.75rem", paddingBottom: "0.5rem", fontSize: "0.8rem", color: "rgba(255,255,255,.5)" }}>
-        <span>Part of the Thicket network</span>
+        <span>Part of the <a href="https://thicket.sh" style={{ color: "rgba(255,255,255,.65)", textDecoration: "none" }}>Thicket network</a></span>
         <a href="https://bsky.app/profile/thicket06.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky" style={{ color: "rgba(255,255,255,.6)" }} title="Bluesky">
           <svg width="18" height="18" viewBox="0 0 600 530" fill="currentColor"><path d="M135.72 44.03C202.216 93.951 273.74 195.401 300 249.281c26.26-53.88 97.784-155.33 164.28-205.251C512.26 8.009 590-19.862 590 68.825c0 17.746-10.2 149.055-16.18 170.3-20.782 73.894-96.678 92.722-163.756 81.294 117.329 19.964 147.063 86.092 82.63 152.213C402.15 563.398 302.203 464.461 300 417.78c-2.203 46.681-102.15 145.618-192.694 54.852-64.433-66.12-34.7-132.249 82.63-152.213-67.078 11.428-142.974-7.4-163.756-81.294C20.2 217.88 10 86.57 10 68.825 10-19.862 87.74 8.01 135.72 44.03Z"/></svg>
         </a>
