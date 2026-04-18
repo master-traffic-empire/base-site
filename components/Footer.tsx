@@ -49,6 +49,7 @@ export function Footer({ siteConfig, extraLinks }: FooterProps) {
                 key={site.slug}
                 href={site.url}
                 title={site.tagline}
+                className="footer-network-pill"
                 style={{
                   fontSize: "0.8rem",
                   color: "rgba(255,255,255,.65)",
@@ -57,16 +58,6 @@ export function Footer({ siteConfig, extraLinks }: FooterProps) {
                   border: "1px solid rgba(255,255,255,.12)",
                   borderRadius: "999px",
                   transition: "color 0.15s, border-color 0.15s",
-                }}
-                onMouseOver={(e) => {
-                  const el = e.currentTarget
-                  el.style.color = "rgba(255,255,255,.9)"
-                  el.style.borderColor = "rgba(255,255,255,.3)"
-                }}
-                onMouseOut={(e) => {
-                  const el = e.currentTarget
-                  el.style.color = "rgba(255,255,255,.65)"
-                  el.style.borderColor = "rgba(255,255,255,.12)"
                 }}
               >
                 {site.name}
