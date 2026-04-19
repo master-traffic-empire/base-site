@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 # generate-article-image.sh — Generate a Discover-optimized hero image for a blog article
-# Uses nano-banana (Gemini) for generation and sharp for optimization.
+# Uses nano-banana (Gemini) for generation and cwebp for WebP conversion.
 #
 # Usage:
 #   ./generate-article-image.sh <site-dir> <article-slug> "<prompt>"
 #
 # Requirements:
 #   - GEMINI_API_KEY environment variable
-#   - npx available (nano-banana + sharp-cli auto-install)
+#   - npx available (nano-banana auto-installs via npx)
+#   - cwebp available (brew install webp)
 #
 # Output:
-#   - <site-dir>/public/images/blog/<article-slug>.webp (1200x675, <150KB)
-#   - <site-dir>/public/images/blog/<article-slug>.png  (original, for OG fallback)
+#   - <site-dir>/public/images/blog/<article-slug>.webp (1200x675, ~80KB)
+#
+# Project rule: WebP-only. No PNG/JPEG is kept — all intermediates are deleted.
 
 set -euo pipefail
 
@@ -19,45 +21,31 @@ SITE_DIR="${1:?Usage: generate-article-image.sh <site-dir> <article-slug> \"<pro
 SLUG="${2:?Missing article slug}"
 PROMPT="${3:?Missing image prompt}"
 
-# Ensure output directory exists
 OUTDIR="$SITE_DIR/public/images/blog"
 mkdir -p "$OUTDIR"
 
-PNG_PATH="$OUTDIR/$SLUG.png"
+TMP_PNG="$(mktemp -t article-image.XXXXXX.png)"
 WEBP_PATH="$OUTDIR/$SLUG.webp"
+
+cleanup() { rm -f "$TMP_PNG"; }
+trap cleanup EXIT
 
 echo "Generating hero image for article: $SLUG"
 echo "Prompt: $PROMPT"
 
-# Generate with nano-banana (1200x675 landscape for Discover)
 GEMINI_API_KEY="${GEMINI_API_KEY:?Set GEMINI_API_KEY}" \
   npx @the-focus-ai/nano-banana \
   "$PROMPT. Wide landscape format, 16:9 aspect ratio, modern editorial illustration style, vibrant, high contrast, no text." \
-  --output "$PNG_PATH"
+  --output "$TMP_PNG"
 
-echo "Generated: $PNG_PATH"
+echo "Generated PNG: $TMP_PNG"
 
-# Optimize: resize to 1200x675 and convert to WebP
-npx sharp-cli \
-  --input "$PNG_PATH" \
-  --output "$WEBP_PATH" \
-  --resize 1200 675 \
-  --format webp \
-  --quality 82
+# Convert + resize to WebP in one step via cwebp (the tool agents already use).
+cwebp -q 82 -resize 1200 675 "$TMP_PNG" -o "$WEBP_PATH" >/dev/null 2>&1
 
-echo "Optimized: $WEBP_PATH"
-
-# Also resize the PNG for OG image fallback
-npx sharp-cli \
-  --input "$PNG_PATH" \
-  --output "$PNG_PATH" \
-  --resize 1200 675 \
-  --quality 85
-
-# Report file sizes
 echo ""
-echo "Results:"
-ls -lh "$PNG_PATH" "$WEBP_PATH" 2>/dev/null | awk '{print "  " $NF ": " $5}'
+echo "Result:"
+ls -lh "$WEBP_PATH" | awk '{print "  " $NF ": " $5}'
 echo ""
 echo "Use in article frontmatter:"
 echo "  image:"
