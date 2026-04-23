@@ -3,7 +3,7 @@
 // Large hero image, structured data, author info, reading time
 
 import Image from "next/image"
-import { generateArticleJsonLd, generateBreadcrumbJsonLd } from "../lib/jsonld"
+import { generateArticleJsonLd, generateBreadcrumbJsonLd, generateFAQJsonLd } from "../lib/jsonld"
 import type { Article, SiteConfig } from "../types"
 
 interface ArticlePageProps {
@@ -20,6 +20,9 @@ export function ArticlePage({
 }: ArticlePageProps) {
   const blogPath = siteConfig.blog?.basePath ?? "/blog"
   const articleJsonLd = generateArticleJsonLd(article, siteConfig)
+  const faqJsonLd = article.faq && article.faq.length > 0
+    ? generateFAQJsonLd(article.faq)
+    : null
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", url: siteConfig.baseUrl },
     { name: "Blog", url: `${siteConfig.baseUrl}${blogPath}` },
@@ -43,6 +46,12 @@ export function ArticlePage({
           __html: JSON.stringify(breadcrumbJsonLd),
         }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
 
       <article className="article">
         <header className="article-header">
@@ -108,6 +117,18 @@ export function ArticlePage({
           className="article-body prose"
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
+
+        {article.faq && article.faq.length > 0 && (
+          <section className="article-faq" aria-labelledby="article-faq-heading">
+            <h2 id="article-faq-heading">Frequently Asked Questions</h2>
+            {article.faq.map((item, i) => (
+              <details key={i} className="faq-item">
+                <summary className="faq-question">{item.question}</summary>
+                <p className="faq-answer">{item.answer}</p>
+              </details>
+            ))}
+          </section>
+        )}
 
         <footer className="article-footer">
           <div className="article-tags">

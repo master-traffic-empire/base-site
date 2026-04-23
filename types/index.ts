@@ -38,6 +38,11 @@ export interface Category {
   featured: boolean
 }
 
+export interface FAQItem {
+  question: string
+  answer: string
+}
+
 export interface Article {
   slug: string
   title: string
@@ -60,6 +65,9 @@ export interface Article {
   tags: string[]
   readingTime: number
   featured: boolean
+  /** Q&A pairs for AEO/GEO. Each answer should be 40-60 words, directly answering
+   *  the question. Emitted as FAQPage JSON-LD and rendered as an accordion on the page. */
+  faq?: FAQItem[]
 }
 
 export interface DirectoryData {
