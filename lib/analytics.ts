@@ -3,10 +3,25 @@
 
 export const GA_MEASUREMENT_ID = "G-E0CF8H2DGH"
 
-// Disable GA4 for internal traffic (agents, scripts, manual testing)
-// Append ?_internal=1 to any URL to suppress analytics
-if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("_internal")) {
-  (window as unknown as Record<string, unknown>)[`ga-disable-${GA_MEASUREMENT_ID}`] = true
+// Disable GA4 for internal traffic (agents, scripts, manual testing, bots)
+// Three suppression paths:
+//   1. ?_internal=1 query param (manual testing, scripts that opt in)
+//   2. Bot/headless User-Agent signatures (Googlebot, Lighthouse, Puppeteer, etc.)
+//   3. Headless Chrome navigator.webdriver flag
+// Diagnosed 2026-05-06: ~71% of GA4 sessions were (direct)/(none) with 13s avg
+// duration / 93% bounce — classic bot signature poisoning the engagement metrics.
+const BOT_UA_PATTERN =
+  /headless|lighthouse|bot|crawler|spider|preview|fetcher|puppeteer|playwright|webdriver|chrome-lighthouse|google-inspectiontool|axios|node-fetch|curl|wget|python-requests/i
+
+if (typeof window !== "undefined") {
+  const params = new URLSearchParams(window.location.search)
+  const ua = navigator.userAgent || ""
+  const isInternal = params.has("_internal")
+  const isBot = BOT_UA_PATTERN.test(ua)
+  const isWebDriver = (navigator as Navigator & { webdriver?: boolean }).webdriver === true
+  if (isInternal || isBot || isWebDriver) {
+    (window as unknown as Record<string, unknown>)[`ga-disable-${GA_MEASUREMENT_ID}`] = true
+  }
 }
 
 // Extend Window for gtag
