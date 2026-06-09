@@ -14,7 +14,17 @@
 //   export const POST = createResultCaptureHandler({ site: "fitness-calc" })
 //   export const runtime = "nodejs"
 
-import { getStore } from "@netlify/blobs"
+// @netlify/blobs is only installed on sites that actually mount the capture API
+// route (e.g. fitness-calc). A STATIC import here breaks the `npm run build` of
+// every OTHER site that compiles this shared base-site file (TS2307) — which
+// shipped a fleet-wide latent build-breaker on 2026-06-09. Load it lazily via a
+// VARIABLE specifier so TypeScript does not statically resolve the module; at
+// runtime only the capture route (on a site that has the dep) ever calls this.
+async function blobStore(name: string): Promise<any> {
+  const pkg = "@netlify/blobs"
+  const mod: any = await import(pkg)
+  return mod.getStore({ name, consistency: "strong" })
+}
 
 interface CapturePayload {
   email?: unknown
@@ -82,7 +92,7 @@ export function createResultCaptureHandler(options: ResultCaptureOptions) {
     }
 
     try {
-      const store = getStore({ name: storeName, consistency: "strong" })
+      const store = await blobStore(storeName)
 
       // 1) Append-only event log: one blob per submission, never overwritten.
       const eventKey = `events/${site}/${record.ts}-${Buffer.from(email)
@@ -109,7 +119,7 @@ export function createResultCaptureHandler(options: ResultCaptureOptions) {
 export async function listResultCaptures(
   storeName = "result-captures"
 ): Promise<ResultCaptureRecord[]> {
-  const store = getStore({ name: storeName, consistency: "strong" })
+  const store = await blobStore(storeName)
   const { blobs } = await store.list({ prefix: "events/" })
   const records: ResultCaptureRecord[] = []
   for (const b of blobs) {
