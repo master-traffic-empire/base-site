@@ -23,6 +23,7 @@ export { RecentlyUsed, addRecentPage, getRecentPages } from "./components/Recent
 export { ShareButton } from "./components/ShareButton"
 export { DarkModeToggle } from "./components/DarkModeToggle"
 export { FeedbackCTA } from "./components/FeedbackCTA"
+export { ResultCapture } from "./components/ResultCapture"
 
 // Layout
 export { RootLayout } from "./layouts/RootLayout"
@@ -39,6 +40,14 @@ export {
   trackToolUsed,
 } from "./lib/analytics"
 export { useScrollDepth, useTimeOnPage } from "./lib/hooks"
+export {
+  createResultCaptureHandler,
+  listResultCaptures,
+} from "./lib/result-capture"
+export type {
+  ResultCaptureRecord,
+  ResultCaptureOptions,
+} from "./lib/result-capture"
 export {
   generateSiteMetadata,
   generateToolsPageMetadata,
