@@ -17,13 +17,38 @@
 // @netlify/blobs is only installed on sites that actually mount the capture API
 // route (e.g. fitness-calc). A STATIC import here breaks the `npm run build` of
 // every OTHER site that compiles this shared base-site file (TS2307) — which
-// shipped a fleet-wide latent build-breaker on 2026-06-09. Load it lazily via a
-// VARIABLE specifier so TypeScript does not statically resolve the module; at
-// runtime only the capture route (on a site that has the dep) ever calls this.
+// shipped a fleet-wide latent build-breaker on 2026-06-09. So this shared file
+// must NOT statically reference the module.
+//
+// BUT: a fallback VARIABLE-specifier `import(pkg)` is invisible to Next's /
+// Netlify's function tracer, so the package is never bundled into the deployed
+// function -> runtime "Cannot find module '@netlify/blobs'" (the whole feature
+// 500'd fleet-wide on 2026-06-10). The fix: the site's OWN route file (which only
+// exists on sites that HAVE the dep) injects a loader using a *string-literal*
+// `import("@netlify/blobs")` — literal specifiers ARE traced and bundled. The
+// variable-import below remains only as a last-resort fallback.
+//
+// Loader contract: a function returning the @netlify/blobs module (or its
+// `getStore`). Sites pass `() => import("@netlify/blobs")`.
+export type BlobsLoader = () => Promise<any>
+
+let injectedBlobsLoader: BlobsLoader | null = null
+
+/** Sites with the dep call this from their route file so the bundler traces it. */
+export function configureBlobsLoader(loader: BlobsLoader): void {
+  injectedBlobsLoader = loader
+}
+
 async function blobStore(name: string): Promise<any> {
-  const pkg = "@netlify/blobs"
-  const mod: any = await import(pkg)
-  return mod.getStore({ name, consistency: "strong" })
+  let mod: any
+  if (injectedBlobsLoader) {
+    mod = await injectedBlobsLoader()
+  } else {
+    const pkg = "@netlify/blobs"
+    mod = await import(pkg)
+  }
+  const getStore = mod.getStore ?? mod.default?.getStore
+  return getStore({ name, consistency: "strong" })
 }
 
 interface CapturePayload {
